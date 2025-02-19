@@ -10,7 +10,7 @@
             if(isset($_POST["submit"])){
                 require("mysql.php");
                 $stmt = $mysql->prepare("SELECT * FROM accounts WHERE USERNAME = :user");
-                $stmt-> bindParam(":user", $_POST["username"]);
+                $stmt-> bindParam(":user", $_POST["username"]); //SQL INJECTION PROTECTION
                 $stmt->execute();
                 $count = $stmt->rowCount();
                 if($count == 1){
@@ -27,6 +27,16 @@
                 }    
             }
         ?>
+
+        <?php if (isset($_SESSION['message'])): ?>
+            <div style="color: green;"><?= htmlspecialchars($_SESSION['message']) ?></div>
+            <?php unset($_SESSION['message']); ?>
+        <?php endif; ?>
+
+        <?php if (isset($_SESSION['error'])): ?>
+            <div style="color: red;"><?= htmlspecialchars($_SESSION['error']) ?></div>
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
         
         <h1>Anmelden</h1>
         <form action="index.php" method="post">
