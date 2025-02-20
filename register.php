@@ -7,9 +7,10 @@
     </head>
     <body>
         <?php
+        session_start();
         if (isset($_POST["submit"])){
             require("mysql.php");
-            $stmt = $mysql->prepare("SELECT * FROM accounts WHERE USERNAME = :user"); // username püfen
+            $stmt = $mysql->prepare("SELECT * FROM accounts WHERE USERNAME = :user"); // check if user name is used
             $stmt->bindParam(":user", $_POST["username"]);
             $stmt->execute();
             $count = $stmt->rowCount();
@@ -20,12 +21,17 @@
                     $phash = password_hash($_POST["pw"], PASSWORD_BCRYPT); // Hashen
                     $stmt->bindParam(":pw", $phash);
                     $stmt->execute();
-                    echo "Ihr Account wurde erfolgreich erstellt";
+
+                    // Second aproach to display test in index.php
+                    $_SESSION['message'] = "Ihr Account wurde erfolgreich erstellt";
+                    header("Location: index.php");
+                    exit();
+                    //echo '<div style="color: green;">Ihr Account wurde erfolgreich erstellt. Sie können jetzt einlogen</div>';
                 } else {
-                    echo "Passwörter stimmen nicht überein";
+                    echo '<div style="color: red;">Passwörter stimmen nicht überein</div>';
                 } 
                 }else {
-                    echo "Username ist bereits vergeben";
+                    echo '<div style="color: red;">Username ist bereits vergeben</div>';
             }
         }
         ?>

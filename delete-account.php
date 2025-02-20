@@ -1,9 +1,7 @@
 <?php
 session_start(); // Start the session
 
-
-
-// Include the database connection
+// Include the database connection once
 require_once 'mysql.php';
 
 // Get the logged-in user's username
@@ -14,15 +12,18 @@ try {
     $stmt = $mysql->prepare("DELETE FROM accounts WHERE USERNAME = :username");
     $stmt->bindParam(':username', $username);
     $stmt->execute();
-
+   
     // Log the user out
-    session_unset(); // Clear all session variables
-    session_destroy(); // Destroy the session
+    //session_unset(); // Clear all session variables
+    //session_destroy(); // Destroy the session so no going back
 
     // Redirect to the homepage with a success message
-    $_SESSION['message'] = "Your account has been deleted successfully.";
-    header("Location: index.php");
-    exit;
+    //$_SESSION['message'] = "Your account has been deleted successfully.";   
+    session_unset();
+    session_destroy();
+    
+    header("Location: goodbye.php");
+    exit();
 } catch (PDOException $e) {
     // Log the error and show a user-friendly message
     error_log("Account deletion error: " . $e->getMessage());

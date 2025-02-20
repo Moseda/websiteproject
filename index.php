@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!doctype html>
 <html lang="de" dir="ltr">
     <head>
@@ -6,6 +9,18 @@
         <title>Login</title>
     </head>
     <body>
+
+        <?php 
+        if (isset($_SESSION['message'])): ?>            
+            <div style="color: green;"><?= htmlspecialchars($_SESSION['message']) ?></div>
+            <?php unset($_SESSION['message']); ?>
+        <?php endif; ?>
+
+        <?php if (isset($_SESSION['error'])): ?>
+            <div style="color: red;"><?= htmlspecialchars($_SESSION['error']) ?></div>
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+        
         <?php
             if(isset($_POST["submit"])){
                 require("mysql.php");
@@ -16,28 +31,24 @@
                 if($count == 1){
                     $row = $stmt->fetch();
                     if(password_verify($_POST["pw"], $row["PASSWORD"])){
-                        session_start();
+                        //session_start();// better at the start
                         $_SESSION["username"] = $row["USERNAME"];
                         header("Location: geheim.php");
                     } else {
-                        echo "Anmeldung fehlgeschlagen";
+                        $_SESSION['error'] = "Anmeldung fehlgeschlagen";
+                        header("Location: index.php");
+                        exit();
+                        //echo '<div style="color: red;">Anmeldung fehlgeschlagen</div>'; // keep the other method for now
                     }
                 } else {
-                    echo "Anmeldung fehlgeschlagen";
+                    $_SESSION['error'] = "Anmeldung fehlgeschlagen";
+                    header("Location: index.php");
+                    exit();
+                    //echo '<div style="color: red;">Anmeldung fehlgeschlagen</div>';
                 }    
             }
         ?>
-
-        <?php if (isset($_SESSION['message'])): ?>
-            <div style="color: green;"><?= htmlspecialchars($_SESSION['message']) ?></div>
-            <?php unset($_SESSION['message']); ?>
-        <?php endif; ?>
-
-        <?php if (isset($_SESSION['error'])): ?>
-            <div style="color: red;"><?= htmlspecialchars($_SESSION['error']) ?></div>
-            <?php unset($_SESSION['error']); ?>
-        <?php endif; ?>
-        
+    
         <h1>Anmelden</h1>
         <form action="index.php" method="post">
         <input type="text" name="username" placeholder="Username" required><br>

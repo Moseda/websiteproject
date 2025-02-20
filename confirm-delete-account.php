@@ -1,3 +1,5 @@
+--not needed for now
+
 <?php
 session_start(); // Start the session
 

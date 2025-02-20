@@ -54,7 +54,17 @@
     <body>
         <h1>Welcome</h1>
         <a href="logout.php" class="btn btn-logout">Abmelden</a>
-        <a href="confirm-delete-account.php">Account löschen</a>
+        <!--a href="confirm-delete-account.php">Account löschen</-->
+        <button onclick="confirmDeletion()">Account löschen</button>
+
+        <script>
+        function confirmDeletion() {
+            let confirmAction = confirm("Are you sure you want to delete your account? This action cannot be undone.");
+            if (confirmAction) {
+                window.location.href = "delete-account.php";
+            }
+        }
+        </script>
     </body>
 </html>
 
